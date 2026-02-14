@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <link href="https://fonts.googleapis.com/css2?family=Anonymous+Pro:wght@700&display=swap" rel="stylesheet">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sheriff game</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="wrap">
+    <div class="stage">
+      
+      <canvas id="game" width="320" height="180"></canvas>
+      <div class="bg2-ui" id="bg2_ui" style="display:none;">
+  <!-- Intro: appare appena premi Start -->
+<div class="bg2-intro" id="bg2_intro" role="dialog" aria-modal="true">
+  <div class="bg2-intro-content">
+    <div class="bg2-intro-text" id="bg2_intro_text">
+      Schiva i proiettili!
+      
+      Spostati con W, A o frecce
+    </div>
+  </div>
+</div>
+
+<!-- Bottone fuori dalla box -->
+<button class="bg2-intro-cta" id="bg2_intro_cta" type="button">
+  Inizia
+</button>
+ 
+
+
+  <!-- End overlay: appare a tempo scaduto -->
+  <div class="bg2-end" id="bg2_end" style="display:none;">
+    <button class="bg2-replay" id="bg2_replay" type="button" aria-label="Replay">
+      ⟲
+    </button>
+  </div>
+</div>
+
+      <!-- UI overlay (da Figma) -->
+    <div class="ui">
+  <div class="card_box">
+    <div class="card_title_box">
+      <div class="card_title">Personalizza il tuo mondo :D</div>
+    </div>
+  </div>
+
+  <div class="row uniforms">
+    <button id="uniform_prev" class="arrow left" type="button" aria-label="Uniforme precedente">◀</button>
+    <button id="uniform_next" class="arrow right" type="button" aria-label="Uniforme successiva">▶</button>
+  </div>
+
+  <div class="row backgrounds">
+    <button id="bg_prev" class="arrow left" type="button" aria-label="Sfondo precedente">◀</button>
+    <button id="bg_next" class="arrow right" type="button" aria-label="Sfondo successivo">▶</button>
+  </div>
+
+  <button id="start_button" class="start_button" type="button">Start</button>
+
+  <div class="mode_select" id="mode_select" style="display:none;">
+  <button id="mode_bg2" class="mode_btn" type="button" aria-label="Gioco proiettili">bullet</button>
+  <button id="mode_bg3" class="mode_btn" type="button" aria-label="Gioco duello">duel</button>
+</div>
+
+ 
+</div>
+      </div>
+    </div>
+  </main>
+
+  <script src="bg2.js"></script>
+  <script src="bg3.js"></script>
+  <script src="main.js"></script>
+</body>
+</html>
+

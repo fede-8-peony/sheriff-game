@@ -1,0 +1,310 @@
+html, body { height: 100%; }
+
+body {
+  margin: 0;
+  display: grid;
+  place-items: center;
+  background: #0b0b0f;
+  color: #fff;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+}
+
+.wrap { display: grid; place-items: center; }
+
+.stage {
+ position: relative;
+  display: inline-block;
+  width: 1280px;
+  height: 720px;
+}
+
+/* Canvas: resta “logico” 320x180, ma viene scalato via JS */
+canvas {
+  display: block;
+  image-rendering: pixelated;
+  border-radius: 14px;
+  box-shadow: 0 18px 60px rgba(0,0,0,.55);
+  background: #000;
+}
+
+/* Overlay UI sopra al canvas */
+.ui{
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1280px;
+  height: 720px;
+  transform-origin: top left;
+}
+
+.card_box {
+  position: absolute;
+  left: 482px;
+  top: 332px;
+  transform: none;
+  width: 316px;
+  height: 376px;
+  border-radius: 15px;
+  background: none;
+  outline: 10px solid #D69EED;
+    box-sizing: border-box;
+}
+
+/* box interna con testo */
+.card_title_box{
+  position: absolute;
+  left: 26px;
+  top: 25px;
+  transform: none;
+   padding: 15px 50px;
+  width: 264px;
+  height: 74px;
+  border-radius: 15px;
+  background: #D69EED; /* oppure colore Figma */
+  outline: 1px solid #D69EED;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.card_title{
+    font-family: "Anonymous Pro", monospace;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.0;      /* puoi provare 1.0–1.1 per matchare Figma */
+  color: #fff;
+  text-align: center;
+  width: 100%;
+}
+
+
+.row{
+  position: absolute;
+  display: block;        /* niente flex */
+  transform: none;       /* IMPORTANTISSIMO */
+  pointer-events: none;
+}
+
+/* i bottoni freccia sono posizionati “a mano” */
+#uniform_prev, #uniform_next, #bg_prev, #bg_next{
+  position: absolute;
+  transform: none;       /* IMPORTANTISSIMO */
+  pointer-events: auto;  /* cliccabili */
+  width: 50px;
+  height: 50px;
+  box-sizing: border-box;
+}
+
+/* COORDINATE DA FIGMA */
+#uniform_prev { left: 508px; top: 636px; }
+#uniform_next { left: 722px; top: 636px; }
+
+#bg_prev      { left: 42px;  top: 310px; }
+#bg_next      { left: 1188px; top: 310px; }
+.arrow{
+  display: grid;
+  place-items: center;
+
+  border-radius: 15px; /* metti il radius di Figma */
+  background: #D69EED; /* metti qui il colore Figma */
+  border: 2px solid #D69EED; /* stroke Figma */
+
+  color: white;        /* colore della freccia */
+  font-size: 24px;
+  line-height: 1;
+
+  cursor: pointer;
+}
+
+
+
+/* Bottone Start */
+.start_button {
+  pointer-events: auto;
+  position: absolute;
+  left: 578px;
+  top: 62px;
+  padding: 10px 18px;
+  border-radius: 15px;
+  border: 1px solid #D69EED;
+  background: #D69EED;
+  color: white;
+  font-size: 30px;
+   font-family: "Anonymous Pro", monospace;
+  font-weight: 700;
+  line-height: 1.0;      /* puoi provare 1.0–1.1 per matchare Figma */
+  text-align: center;
+  cursor: pointer;
+}
+
+.start_button:hover { filter: brightness(1.05); }
+.start_button:active {
+  transform: translateY(1px);
+}
+
+/* HUD in alto a sinistra */
+.bg2-hud{
+  position:absolute;
+  top:26px;
+  left:23px;
+  pointer-events:none;  /* non cliccabile */
+  padding: 16px 10px;
+  border-radius: 15px;
+  border: 1px solid #D69EED;
+  background: #D69EEDCC;
+  color: white;
+  font-size: 23px;
+   font-family: "Anonymous Pro", monospace;
+  font-weight: 700;
+  line-height: 1.0;      /* puoi provare 1.0–1.1 per matchare Figma */
+  text-align: center;
+  cursor: pointer;
+ 
+}
+
+/* Intro: blocca input finché non inizi */
+.bg2-intro{
+  position: absolute;
+  inset: 0;
+  pointer-events: auto;
+  background: transparent;
+}
+
+#bg2_intro_text { white-space: pre-line; }
+.bg2-intro-content{
+  position: absolute;
+  top: 158px;
+  left: 431px;
+
+  width: 417px;      /* ← DA FIGMA */
+  height: 130px;     /* ← DA FIGMA */
+
+  
+  box-sizing: border-box;
+
+  border-radius: 15px;
+  border: 1px solid #D69EED;
+
+  background: #D69EED; /* 80% */
+
+  color: #fff;
+  font-family: "Anonymous Pro", monospace;
+  font-weight: 700;
+  font-size: 23px;
+
+  line-height: 23px; /* match Figma in px */
+
+    text-align: center;      /* testo centrato */
+    transform: none;
+}
+
+
+/* CTA cliccabile */
+.bg2-intro-cta{
+  pointer-events: auto;
+  position: absolute;
+
+  /* Coordinate Figma */
+  left: 566px;
+  top: 348px;
+
+  /* Dimensioni Figma */
+  width: 148px;
+  height: 56px;
+
+  /* Box */
+  box-sizing: border-box;
+  border-radius: 15px;
+  border: none;
+
+  /* Colore Figma con 80% */
+  background-color: #D69EED;
+
+  /* Testo */
+  color: #ffffff;
+  font-family: "Anonymous Pro", monospace;
+  font-weight: 700;
+  font-size: 23px;
+
+  /* CENTRATURA PERFETTA DEL TESTO */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  text-align: center;
+  cursor: pointer;
+}
+.bg2-intro-cta:hover { filter: brightness(1.05); }
+.bg2-intro-cta:active { transform: translateY(1px); }
+
+
+/* End overlay: mostra replay cliccabile */
+.bg2-end{
+  position: absolute;
+  inset: 0;
+  display: none;          /* nascosto di default */
+  pointer-events: auto;
+}
+
+
+.bg2-replay{
+  pointer-events: auto;
+  position: absolute;
+
+  /* Coordinate Figma */
+  left: 566px;
+  top: 62px;
+
+  /* Dimensioni */
+  width: 148px;
+  height: 56px;
+
+  box-sizing: border-box;
+  border-radius: 15px;
+  border: none;
+
+  background-color: #D69EED;
+
+  color: #ffffff;
+  font-family: "Anonymous Pro", monospace;
+  font-weight: 700;
+  font-size: 26px;
+
+  /* testo centrato perfetto */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+}
+.bg2-replay:hover { filter: brightness(1.05); }
+.bg2-replay:active { transform: translateY(1px); }
+
+.mode_select{
+  position: absolute;
+  left: 480px;
+  top: 200px;
+  display: flex;
+  gap: 40px;
+}
+
+.mode_btn{
+  width: 140px;
+  height: 60px;
+
+  border-radius: 15px;
+  border: none;
+  background: #D69EED;
+
+  color: white;
+  font-family: "Anonymous Pro", monospace;
+  font-size: 20px;
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+
+.mode_btn:hover { filter: brightness(1.1); }
+
+
+
