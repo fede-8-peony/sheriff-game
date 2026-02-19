@@ -30,43 +30,11 @@ const uniformCrouchPaths = [
   "assets/sheriff/uniform_3_crouch.png",
 ];
 
-const princessPaths = [
-  "assets/princess/princess_base.png",
-  "assets/princess/princess_mid.png",
-  "assets/princess/princess_full.png"
-];
-
-const loveHeartPaths = [
-  "assets/princess/heart_half.png",
-  "assets/princess/heart_full.png"
-];
-
-let loveHeartImgs = [];
-
-
 const gunStandPath = "assets/sheriff/gun.png";
 const gunCrouchPath = "assets/sheriff/gun_crouch.png";
 
 const enemyBasePath = "assets/enemy/enemy_base.png";
 const enemyCrouchPath = "assets/enemy/enemy_crouch.png";
-
-const eyeDropsPath = "assets/princess/eye_drops.png";
-let eyeDropsImg = null;
-
-const bubbleWinPaths = [
-  "assets/princess/bubble_win_1.png",
-  "assets/princess/bubble_win_2.png",
-  "assets/princess/bubble_win_3.png"
-];
-
-const bubbleLosePaths = [
-  "assets/princess/bubble_lose_1.png",
-  "assets/princess/bubble_lose_2.png",
-  "assets/princess/bubble_lose_3.png"
-];
-
-let bubbleWinImgs = [];
-let bubbleLoseImgs = [];
 
 
 
@@ -102,9 +70,6 @@ let currentUniform = 0;
 let currentBackground = 0;
 let bg2ClockImgs = [];
 
-let princessImgs = [];
-
-
 let jumpAnim = null; // { startTime, duration }
 let waveAnim = null;
 
@@ -113,26 +78,7 @@ const GameState = {
   SELECT: "select",
   MODE_SELECT: "mode_select",
   BG2: "bg2",
-  BG3: "bg3",
-  PRINCESS: "princess"   // 👑 nuovo stato
-};
-
-let princessState = {
-  x: BASE_W,
-  y: BASE_H - 60,
-  frameIndex: 0,
-  frameTimer: 0,
-    // 👇 salto
-  hopT: 0,          // tempo accumulato
-  hopPeriod: 0.45,  // durata di un saltino (sec)
-  hopAmp: 4,       // altezza saltino (px)
-  bubbleStep: 0,        // 0..2
-bubbleTimer: 0,
-bubbleStarted: false,
-hearts: [],
-heartSpawnTimer: 0,
-showHearts: false
-
+  BG3: "bg3"
 };
 
 
@@ -387,12 +333,7 @@ bg2Replay.addEventListener("pointerdown", (e) => {
   e.preventDefault();
 
   // ✅ ora vale sia per BG2 che per BG3
-  if (
-  gameState !== GameState.BG2 &&
-  gameState !== GameState.BG3 &&
-  gameState !== GameState.PRINCESS
-) return;
-
+  if (gameState !== GameState.BG2 && gameState !== GameState.BG3) return;
 
   exitToSelect();
 });
@@ -506,299 +447,82 @@ function loop() {
   const dt = (now - lastT) / 1000;
   lastT = now;
 
-  // =========================
-  // SELECT / MODE_SELECT
-  // =========================
   if (gameState === GameState.SELECT || gameState === GameState.MODE_SELECT) {
-
-    drawStartScreen();
-
-  }
-
-  // =========================
-  // BG2
-  // =========================
-  else if (gameState === GameState.BG2) {
-
+  drawStartScreen();
+  } else if (gameState === GameState.BG2) {
+    // Se BG2 non è stato creato (o c'è stato un errore), torna alla selezione
     if (!bg2Game) {
       exitToSelect();
     } else {
-
       bg2Game.update(dt);
+      
 
-      if (bg2Game.ended && bg2Phase !== Bg2Phase.ENDED) {
-        bg2Phase = Bg2Phase.ENDED;
-        bg2End.style.display = "block";
-      }
 
-      bg2Game.draw(ctx, {
-        bg: bgImgs[currentBackground],
-        sheriffBase: sheriffBaseFrames[0],
-        uniform: uniformImgs[currentUniform],
-        waspImg: bg2WaspImg,
-        heartFull: bg2HeartFullImg,
-        heartHalf: bg2HeartHalfImg,
-        heartEmpty: bg2HeartEmptyImg,
-        clockImgs: bg2ClockImgs,
-        digitsImg: bg2DigitsImg
-      });
+
+if (bg2Game.ended && bg2Phase !== Bg2Phase.ENDED) {
+  bg2Phase = Bg2Phase.ENDED;
+  bg2End.style.display = "block";
+
+}
+
+
+
+   bg2Game.draw(ctx, {
+  bg: bgImgs[currentBackground],
+  sheriffBase: sheriffBaseFrames[0],
+  uniform: uniformImgs[currentUniform],
+  waspImg: bg2WaspImg,
+  heartFull: bg2HeartFullImg,
+  heartHalf: bg2HeartHalfImg,
+  heartEmpty: bg2HeartEmptyImg,
+  clockImgs: bg2ClockImgs,  // ← QUI
+  digitsImg: bg2DigitsImg
+
+});
+
     }
-  }
-
-  // =========================
-// BG3
-// =========================
-else if (gameState === GameState.BG3) {
+  } else if (gameState === GameState.BG3) {
   if (!bg3Game) {
     exitToSelect();
   } else {
     bg3Game.update(dt);
 
-    // 🔥 TRANSIZIONE ALLA PRINCIPESSA
+    bg3Game.draw(ctx, {
+  bg: bgImgs[currentBackground],
+
+  sheriffBase: sheriffBaseFrames[0],
+  sheriffBaseCrouch: sheriffBaseCrouchImg,
+  uniform: uniformImgs[currentUniform],
+  uniformCrouch: uniformCrouchImgs[currentUniform],
+  gunStand: gunStandImg,
+  gunCrouch: gunCrouchImg,
+
+  enemyBase: enemyBaseImg,
+  enemyCrouch: enemyCrouchImg,
+
+  reloadIcon: reloadIconImg,
+
+
+  bulletImg: bg2WaspImg,
+
+  heartFull: bg2HeartFullImg,
+  heartHalf: bg2HeartHalfImg,
+  heartEmpty: bg2HeartEmptyImg
+});
+
+
+
+
     if (bg3Game.ended && bg2Phase !== Bg2Phase.ENDED) {
-      gameState = GameState.PRINCESS;
-
-      princessState.x = BASE_W;
-      princessState.y = BASE_H - 60;   // ✅ aggiungo anche y per sicurezza
-      princessState.frameIndex = 0;
-      princessState.frameTimer = 0;
-      princessState.bubbleStep = 0;
-princessState.bubbleTimer = 0;
-princessState.bubbleStarted = false;
-
-princessState.showHearts = false;
-princessState.hearts = [];
-princessState.heartSpawnTimer = 0;
-
-
-
-      bg2End.style.display = "none";
-princessState.playerDead = (bg3Game.winner === "enemy");
-
-        
-
-    } else {
-      // Disegna BG3 normalmente
-      bg3Game.draw(ctx, {
-        bg: bgImgs[currentBackground],
-
-        sheriffBase: sheriffBaseFrames[0],
-        sheriffBaseCrouch: sheriffBaseCrouchImg,
-        uniform: uniformImgs[currentUniform],
-        uniformCrouch: uniformCrouchImgs[currentUniform],
-        gunStand: gunStandImg,
-        gunCrouch: gunCrouchImg,
-
-        enemyBase: enemyBaseImg,
-        enemyCrouch: enemyCrouchImg,
-
-        reloadIcon: reloadIconImg,
-
-        bulletImg: bg2WaspImg,
-
-        heartFull: bg2HeartFullImg,
-        heartHalf: bg2HeartHalfImg,
-        heartEmpty: bg2HeartEmptyImg
-      });
+      bg2Phase = Bg2Phase.ENDED;
+      bg2End.style.display = "block";
     }
   }
 }
 
-  // =========================
-  // PRINCESS CUTSCENE
-  // =========================
-  else if (gameState === GameState.PRINCESS) {
-
-    ctx.clearRect(0, 0, BASE_W, BASE_H);
-    ctx.drawImage(bgImgs[currentBackground], 0, 0);
-
-    // Disegna sceriffo fermo
-    const sheriffX = 40;
-const sheriffY = BASE_H - 60;
-
-function drawLying(img, x, y) {
-  if (!img) return;
-
-  const w = img.width;
-  const h = img.height;
-
-  // punto “a terra” (dove appoggia il corpo)
-  const groundX = x + Math.floor(w / 2);
-  const groundY = y + h - 2;
-
-  ctx.save();
-  ctx.translate(groundX, groundY);
-  ctx.rotate(-Math.PI / 2); // 90° verso sinistra (sdraiato)
-  ctx.drawImage(img, -Math.floor(w / 2), -h); // ancoraggio
-  ctx.restore();
-}
-
-if (princessState.playerDead) {
-  // ✅ player morto: sdraiato
-  drawLying(sheriffBaseFrames[0], sheriffX, sheriffY);
-  drawLying(uniformImgs[currentUniform], sheriffX, sheriffY);
-} else {
-  // ✅ player vivo: normale
-  ctx.drawImage(sheriffBaseFrames[0], sheriffX, sheriffY);
-  ctx.drawImage(uniformImgs[currentUniform], sheriffX, sheriffY);
-}
-
-
-    // Movimento principessa
-    const speed = 55;
-    princessState.x -= speed * dt;
-
-    // --- salto (hop) ---
-princessState.hopT += dt;
-
-// fase 0..1
-const p = (princessState.hopT % princessState.hopPeriod) / princessState.hopPeriod;
-
-// curva “salto”: 0 a terra, picco a metà, 0 a terra
-const hopY = Math.sin(p * Math.PI) * princessState.hopAmp; // 0..amp..0
-const yOffset = -Math.floor(hopY);
-
-
-    // Animazione 0-1-2-1
-    princessState.frameTimer += dt;
-    if (princessState.frameTimer >= 0.18) {
-      princessState.frameTimer = 0;
-      princessState.frameIndex = (princessState.frameIndex + 1) % 4;
-    }
-
-    const seq = [0, 1, 2, 1];
-    const frame = princessImgs[seq[princessState.frameIndex]];
-
-// frame = princessImgs[...]
-if (frame) {
-  ctx.drawImage(
-    frame,
-    Math.floor(princessState.x),
-    Math.floor(princessState.y + yOffset)
-  );
-
-  // ✅ lacrime sopra, stessa posizione (solo se player morto)
-  if (princessState.playerDead && eyeDropsImg) {
-    ctx.drawImage(
-      eyeDropsImg,
-      Math.floor(princessState.x),
-      Math.floor(princessState.y + yOffset)
-    );
-  }
-}
-
-
-
-    // Quando arriva vicino
-    const stopX = 70;
-
-   if (princessState.x <= stopX) {
-  princessState.x = stopX;
-
-  // stop hop (così non rimbalza ferma)
-  princessState.hopT = 0;
-
-  bg2Phase = Bg2Phase.ENDED;
-  bg2End.style.display = "block";
-}
-
-
-const arrived = princessState.x <= stopX;
-if (arrived) princessState.x = stopX;
-
-// Avvia bubble quando arriva
-if (arrived && !princessState.bubbleStarted) {
-  princessState.bubbleStarted = true;
-  princessState.bubbleStep = 0;
-  princessState.bubbleTimer = 0;
-}
-
-// Avanza bubble a step (solo se iniziata e non completa)
-if (princessState.bubbleStarted && princessState.bubbleStep < 2) {
-  princessState.bubbleTimer += dt;
-
-  // ogni 0.35 secondi passa allo step successivo
-  if (princessState.bubbleTimer >= 0.35) {
-    princessState.bubbleTimer = 0;
-    princessState.bubbleStep++;
-  }
-}
-
-// Disegna bubble (se iniziata)
-if (princessState.bubbleStarted) {
-  const bubbleSet = princessState.playerDead ? bubbleLoseImgs : bubbleWinImgs;
-  const bubbleImg = bubbleSet[princessState.bubbleStep];
-
-  if (bubbleImg) {
-    const bubbleOffsetX = 30;   // → destra
-const bubbleOffsetY = -30;  // ↑ più in alto
-
-ctx.drawImage(
-  bubbleImg,
-  Math.floor(princessState.x + bubbleOffsetX),
-  Math.floor(princessState.y + yOffset + bubbleOffsetY)
-);
-
-  }
-}
-if (!princessState.playerDead && princessState.bubbleStep === 2) {
-  princessState.showHearts = true;
-}
-if (princessState.showHearts) {
-  princessState.heartSpawnTimer += dt;
-
-  if (princessState.heartSpawnTimer > 0.1) {
-    princessState.heartSpawnTimer = 0;
-
-    princessState.hearts.push({
-      x: Math.random() * (BASE_W - 16),  // random orizzontale
-      y: BASE_H + 10,                   // appena sotto lo schermo
-      vy: -40 - Math.random() * 40,
-      frame: 0,        // half
-      frameTimer: 0,
-      rise: false
-    });
-  }
-}
-
-
-for (const h of princessState.hearts) {
-
-  h.frameTimer += dt;
-
-  // passa da half a full
-  if (!h.rise && h.frame === 0 && h.frameTimer >= 0.12) {
-    h.frame = 1;
-    h.rise = true;
-    h.frameTimer = 0;
-  }
-
-  // solo quando è full sale
-  if (h.rise) {
-    h.y += h.vy * dt;
-  }
-}
-
-
-for (const h of princessState.hearts) {
-
-  const img = loveHeartImgs[h.frame];
-
-  if (!img) continue;
-
-  ctx.drawImage(
-    img,
-    Math.floor(h.x),
-    Math.floor(h.y)
-  );
-}
-
-
-  }
 
   requestAnimationFrame(loop);
 }
-
 
 
 // === Boot ===
@@ -819,17 +543,6 @@ enemyBaseImg = await loadImage(enemyBasePath);
 enemyCrouchImg = await loadImage(enemyCrouchPath);
 
 reloadIconImg = await loadImage(reloadIconPath);
-princessImgs = await Promise.all(princessPaths.map(loadImage));
-
-bubbleWinImgs = await Promise.all(bubbleWinPaths.map(loadImage));
-bubbleLoseImgs = await Promise.all(bubbleLosePaths.map(loadImage));
-loveHeartImgs = await Promise.all(loveHeartPaths.map(loadImage));
-
-
-
-try { eyeDropsImg = await loadImage(eyeDropsPath); } catch (e) { eyeDropsImg = null; }
-
-
 
 
 
