@@ -11,8 +11,8 @@ body {
 
 .wrap { display: grid; place-items: center; }
 
-.stage {
- position: relative;
+.stage{
+  position: relative;
   display: inline-block;
   width: 1280px;
   height: 720px;
@@ -27,7 +27,7 @@ canvas {
   background: #000;
 }
 
-/* Overlay UI sopra al canvas */
+
 .ui{
   position: absolute;
   left: 0;

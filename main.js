@@ -118,16 +118,29 @@ let gunStandImg = null;
 let gunCrouchImg = null;
 
 
+const DESIGN_W = 1280;
+const DESIGN_H = 720;
+
+const stage = document.querySelector(".stage");
 const uiOverlay = document.querySelector(".ui");
 
-// === Scaling intero ===
 function applyIntegerScale() {
-  
-  const scaleX = Math.floor((window.innerWidth * 0.95) / BASE_W);
-  const scaleY = Math.floor((window.innerHeight * 0.80) / BASE_H);
+  const vv = window.visualViewport;
+  const viewW = vv ? vv.width : window.innerWidth;
+  const viewH = vv ? vv.height : window.innerHeight;
+
+  const scaleX = Math.floor((viewW * 0.95) / DESIGN_W);
+  const scaleY = Math.floor((viewH * 0.90) / DESIGN_H);
   const scale = Math.max(1, Math.min(scaleX, scaleY));
-  canvas.style.width = `${BASE_W * scale}px`;
-  canvas.style.height = `${BASE_H * scale}px`;
+
+  stage.style.width = `${DESIGN_W * scale}px`;
+  stage.style.height = `${DESIGN_H * scale}px`;
+
+  canvas.style.width = `${DESIGN_W * scale}px`;
+  canvas.style.height = `${DESIGN_H * scale}px`;
+
+  uiOverlay.style.transform = `scale(${scale})`;
+  uiOverlay.style.transformOrigin = "top left";
 }
 
 function wrapIndex(i, len) {
